@@ -84,14 +84,16 @@ class PyBindIncludes(object):
 
 
 MACOS = platform.system() == 'Darwin'
+WINDOWS = platform.system() == 'Windows'
 ext_modules = [
     setuptools.Extension(
         'gcld3.pybind_ext',
         sorted(SRCS),
+        define_macros=[('PROTOBUF_USE_DLLS', '1')] if WINDOWS else [],
         include_dirs=[
             PyBindIncludes(),
         ],
-        libraries=['protobuf'],
+        libraries=['libprotobuf' if WINDOWS else 'protobuf'],
         extra_compile_args=['-std=c++11', '-stdlib=libc++'] if MACOS else [],
         extra_link_args=['-stdlib=libc++'] if MACOS else [],
         language='c++'),
